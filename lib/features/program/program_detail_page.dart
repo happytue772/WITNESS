@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/widgets/program_image.dart';
 import '../../data/models/program.dart';
 import '../reservation/reservation_page.dart';
 
@@ -58,7 +59,12 @@ class ProgramDetailPage extends StatelessWidget {
               ),
             ),
 
-            _ProgramVisual(program: program),
+            ProgramImage(
+              programId: program.id,
+              senseType: program.senseType,
+              height: 240,
+              showLabel: true,
+            ),
 
             Padding(
               padding: const EdgeInsets.all(24),
@@ -141,60 +147,6 @@ class ProgramDetailPage extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _ProgramVisual extends StatelessWidget {
-  final Program program;
-
-  const _ProgramVisual({
-    required this.program,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    IconData icon;
-
-    if (program.senseType == '시각') {
-      icon = Icons.visibility_outlined;
-    } else if (program.senseType == '촉각') {
-      icon = Icons.pan_tool_alt_outlined;
-    } else {
-      icon = Icons.air;
-    }
-
-    return Container(
-      width: double.infinity,
-      height: 240,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.lightBlue,
-            AppColors.softYellow,
-          ],
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 64,
-            color: AppColors.burgundy,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            '${program.senseType} 웰니스 프로그램',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              color: AppColors.darkBrown,
-            ),
-          ),
-        ],
       ),
     );
   }
