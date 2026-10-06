@@ -186,6 +186,26 @@ class _HeroSection extends StatelessWidget {
                     ],
                   ),
                 ),
+                alignment: Alignment.topRight,
+                padding: const EdgeInsets.all(14),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.28),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Text(
+                    '메인 이미지 추후 적용',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.white,
+                    ),
+                  ),
+                ),
               );
             },
           ),
