@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/navigation/home_navigation_action.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/models/program.dart';
 import '../../data/repositories/local_repository.dart';
@@ -128,6 +129,13 @@ class _ReservationPageState
             color: AppColors.darkBrown,
           ),
         ),
+        actions: const [
+          HomeNavigationAction(
+            warningTitle: '예약 작성을 중단할까요?',
+            warningMessage:
+                '아직 예약이 확정되지 않았습니다. 홈으로 이동하면 현재 선택한 인원 등의 설정이 저장되지 않아 예약을 다시 진행해야 할 수 있습니다.',
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
