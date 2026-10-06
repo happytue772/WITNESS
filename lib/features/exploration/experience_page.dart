@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/navigation/home_navigation_action.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/program_image.dart';
 import '../../data/repositories/local_repository.dart';
@@ -50,6 +51,9 @@ class ExperiencePage extends StatelessWidget {
                   color: AppColors.darkBrown,
                 ),
               ),
+              actions: const [
+                HomeNavigationAction(),
+              ],
             ),
             body: const Center(
               child: Text(
@@ -75,6 +79,16 @@ class ExperiencePage extends StatelessWidget {
                 color: AppColors.darkBrown,
               ),
             ),
+            actions: [
+              HomeNavigationAction(
+                warningTitle: progress.experienceCompleted
+                    ? null
+                    : '체험을 중단할까요?',
+                warningMessage: progress.experienceCompleted
+                    ? null
+                    : '아직 체험 완료 처리가 되지 않았습니다. 홈으로 이동하면 현재 체험 화면을 벗어나며, 나중에 탐색 화면을 통해 다시 체험 단계로 돌아와 완료해야 합니다.',
+              ),
+            ],
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
