@@ -25,10 +25,8 @@ class ProgramListPage extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        actions: const [
-          HomeNavigationAction(),
-        ],
       ),
+      bottomNavigationBar: const HomeNavigationBottomBar(),
       body: ListView.separated(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         itemCount: programs.length,
