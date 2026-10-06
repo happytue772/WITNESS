@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/widgets/program_image.dart';
 import '../../data/models/program.dart';
 import '../../data/repositories/local_repository.dart';
 import 'program_detail_page.dart';
@@ -44,19 +45,6 @@ class _ProgramCard extends StatelessWidget {
   const _ProgramCard({
     required this.program,
   });
-
-  IconData get _senseIcon {
-    switch (program.senseType) {
-      case '시각':
-        return Icons.visibility_outlined;
-      case '촉각':
-        return Icons.pan_tool_alt_outlined;
-      case '후각':
-        return Icons.air;
-      default:
-        return Icons.spa_outlined;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,24 +106,10 @@ class _ProgramCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                width: double.infinity,
+              ProgramImage(
+                programId: program.id,
+                senseType: program.senseType,
                 height: 170,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.lightBlue,
-                      AppColors.softYellow,
-                    ],
-                  ),
-                ),
-                child: Icon(
-                  _senseIcon,
-                  size: 64,
-                  color: AppColors.burgundy,
-                ),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(
