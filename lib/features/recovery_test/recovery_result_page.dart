@@ -62,10 +62,8 @@ class RecoveryResultPage extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        actions: const [
-          HomeNavigationAction(),
-        ],
       ),
+      bottomNavigationBar: const HomeNavigationBottomBar(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
