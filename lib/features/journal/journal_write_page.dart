@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../core/navigation/home_navigation_action.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/repositories/local_repository.dart';
 import '../../data/services/media_storage_service.dart';
@@ -207,6 +208,13 @@ class _JournalWritePageState
             color: AppColors.darkBrown,
           ),
         ),
+        actions: const [
+          HomeNavigationAction(
+            warningTitle: '기록 작성을 중단할까요?',
+            warningMessage:
+                '아직 저장하지 않은 한 줄 후기와 변경사항은 사라질 수 있습니다. 홈으로 이동하면 다시 작성해야 할 수 있습니다.',
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
