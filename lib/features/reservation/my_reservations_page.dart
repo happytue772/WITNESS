@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/widgets/program_image.dart';
 import '../../data/models/reservation.dart';
 import '../../data/repositories/local_repository.dart';
 import 'invitation_page.dart';
 
-class MyReservationsPage extends StatelessWidget {
+class MyReservationsPage extends StatefulWidget {
   const MyReservationsPage({super.key});
+
+  @override
+  State<MyReservationsPage> createState() =>
+      _MyReservationsPageState();
+}
+
+class _MyReservationsPageState
+    extends State<MyReservationsPage> {
+  int _selectedTab = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -18,73 +28,92 @@ class MyReservationsPage extends StatelessWidget {
         child: AnimatedBuilder(
           animation: repository,
           builder: (context, _) {
-            final reservations = repository.reservations;
+            final upcoming = <Reservation>[];
+            final past = <Reservation>[];
 
-            if (reservations.isEmpty) {
-              return const _EmptyReservationView();
-            }
-
-            final currentReservations = <Reservation>[];
-            final completedReservations = <Reservation>[];
-
-            for (final reservation in reservations.reversed) {
+            for (final reservation
+                in repository.reservations.reversed) {
               final progress =
-                  repository.progressForReservation(reservation.id);
+                  repository.progressForReservation(
+                reservation.id,
+              );
 
               if (progress.experienceCompleted) {
-                completedReservations.add(reservation);
+                past.add(reservation);
               } else {
-                currentReservations.add(reservation);
+                upcoming.add(reservation);
               }
             }
 
-            return ListView(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+            final visibleReservations =
+                _selectedTab == 0 ? upcoming : past;
+
+            return Column(
               children: [
-                const Text(
-                  '내 예약',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.darkBrown,
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    20,
+                    20,
+                    20,
+                    14,
                   ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  '예약부터 탐색과 체험 완료까지 한곳에서 확인해보세요.',
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
-                const SizedBox(height: 26),
-
-                if (currentReservations.isNotEmpty) ...[
-                  const _SectionHeader(
-                    title: '진행 중인 예약',
-                    icon: Icons.confirmation_number_outlined,
-                  ),
-                  const SizedBox(height: 12),
-                  ...currentReservations.map(
-                    (reservation) => _ReservationCard(
-                      reservation: reservation,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      '내 예약',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.darkBrown,
+                      ),
                     ),
                   ),
-                ],
-
-                if (completedReservations.isNotEmpty) ...[
-                  if (currentReservations.isNotEmpty)
-                    const SizedBox(height: 20),
-                  const _SectionHeader(
-                    title: '지난 체험',
-                    icon: Icons.history,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
                   ),
-                  const SizedBox(height: 12),
-                  ...completedReservations.map(
-                    (reservation) => _ReservationCard(
-                      reservation: reservation,
-                    ),
+                  child: _ReservationTabs(
+                    selectedIndex: _selectedTab,
+                    onChanged: (index) {
+                      setState(() {
+                        _selectedTab = index;
+                      });
+                    },
                   ),
-                ],
+                ),
+                const SizedBox(height: 18),
+                Expanded(
+                  child: visibleReservations.isEmpty
+                      ? _ReservationEmptyState(
+                          isUpcoming:
+                              _selectedTab == 0,
+                        )
+                      : ListView.separated(
+                          padding:
+                              const EdgeInsets.fromLTRB(
+                            20,
+                            0,
+                            20,
+                            32,
+                          ),
+                          itemCount:
+                              visibleReservations.length,
+                          separatorBuilder: (_, _) =>
+                              const SizedBox(height: 14),
+                          itemBuilder: (
+                            context,
+                            index,
+                          ) {
+                            return _ReservationCard(
+                              reservation:
+                                  visibleReservations[index],
+                              isPast:
+                                  _selectedTab == 1,
+                            );
+                          },
+                        ),
+                ),
               ],
             );
           },
@@ -94,51 +123,100 @@ class MyReservationsPage extends StatelessWidget {
   }
 }
 
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final IconData icon;
+class _ReservationTabs extends StatelessWidget {
+  final int selectedIndex;
+  final ValueChanged<int> onChanged;
 
-  const _SectionHeader({
-    required this.title,
-    required this.icon,
+  const _ReservationTabs({
+    required this.selectedIndex,
+    required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 20,
-          color: AppColors.burgundy,
-        ),
-        const SizedBox(width: 8),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: AppColors.darkBrown,
+    return Container(
+      height: 46,
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: AppColors.softYellow,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _ReservationTabButton(
+              label: '예정된 예약',
+              selected: selectedIndex == 0,
+              onTap: () => onChanged(0),
+            ),
+          ),
+          Expanded(
+            child: _ReservationTabButton(
+              label: '지난 예약',
+              selected: selectedIndex == 1,
+              onTap: () => onChanged(1),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ReservationTabButton extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _ReservationTabButton({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected
+          ? AppColors.burgundy
+          : Colors.transparent,
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: onTap,
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: selected
+                  ? AppColors.white
+                  : AppColors.darkBrown,
+            ),
           ),
         ),
-      ],
+      ),
     );
   }
 }
 
 class _ReservationCard extends StatelessWidget {
   final Reservation reservation;
+  final bool isPast;
 
   const _ReservationCard({
     required this.reservation,
+    required this.isPast,
   });
 
   Future<void> _confirmDeleteReservation(
     BuildContext context,
   ) async {
     final repository = LocalRepository.instance;
-    final program =
-        repository.programById(reservation.programId);
+    final program = repository.programById(
+      reservation.programId,
+    );
 
     final shouldDelete = await showDialog<bool>(
       context: context,
@@ -152,16 +230,23 @@ class _ReservationCard extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(dialogContext, false);
+                Navigator.pop(
+                  dialogContext,
+                  false,
+                );
               },
               child: const Text('취소'),
             ),
             FilledButton(
               onPressed: () {
-                Navigator.pop(dialogContext, true);
+                Navigator.pop(
+                  dialogContext,
+                  true,
+                );
               },
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.burgundy,
+                backgroundColor:
+                    AppColors.burgundy,
               ),
               child: const Text('삭제'),
             ),
@@ -170,7 +255,8 @@ class _ReservationCard extends StatelessWidget {
       },
     );
 
-    if (shouldDelete != true || !context.mounted) {
+    if (shouldDelete != true ||
+        !context.mounted) {
       return;
     }
 
@@ -212,179 +298,245 @@ class _ReservationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final repository = LocalRepository.instance;
 
-    final program =
-        repository.programById(reservation.programId);
+    final program = repository.programById(
+      reservation.programId,
+    );
 
-    final session =
-        repository.sessionById(reservation.sessionId);
+    final session = repository.sessionById(
+      reservation.sessionId,
+    );
 
     final progress =
-        repository.progressForReservation(reservation.id);
+        repository.progressForReservation(
+      reservation.id,
+    );
 
     final String status;
-    final IconData statusIcon;
 
     if (progress.experienceCompleted) {
       status = '체험 완료';
-      statusIcon = Icons.check_circle;
     } else if (progress.explorationCompleted) {
       status = '탐색 완료 · 체험 대기';
-      statusIcon = Icons.flag_outlined;
     } else if (reservation.checkedIn) {
       status = '체크인 완료 · 탐색 중';
-      statusIcon = Icons.explore_outlined;
     } else {
       status = '예약 완료 · 체크인 전';
-      statusIcon = Icons.schedule;
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: Material(
+    return Container(
+      decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(22),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => InvitationPage(
-                  reservationId: reservation.id,
-                ),
-              ),
-            );
-          },
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: AppColors.burgundy.withValues(
-                  alpha: 0.15,
-                ),
-              ),
-              borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: AppColors.burgundy.withValues(
+            alpha: 0.12,
+          ),
+        ),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              14,
+              14,
+              10,
+              12,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.softYellow,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Text(
-                        program.senseType,
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.burgundy,
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      tooltip: '예약 삭제',
-                      onPressed: () {
-                        _confirmDeleteReservation(
-                          context,
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.delete_outline,
-                        size: 21,
-                        color: AppColors.burgundy,
-                      ),
-                    ),
-                    const Icon(
-                      Icons.arrow_forward_ios,
-                      size: 15,
-                      color: AppColors.burgundy,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  program.title,
-                  style: const TextStyle(
-                    fontSize: 21,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.darkBrown,
+                SizedBox(
+                  width: 76,
+                  height: 86,
+                  child: ProgramImage(
+                    programId: program.id,
+                    senseType: program.senseType,
+                    height: 86,
+                    borderRadius:
+                        BorderRadius.circular(14),
                   ),
                 ),
-                const SizedBox(height: 7),
-                Text(
-                  '${program.location} · ${session.label} · '
-                  '${reservation.guestCount}명',
-                  style: const TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
-                const SizedBox(height: 15),
-                Row(
-                  children: [
-                    Icon(
-                      statusIcon,
-                      size: 19,
-                      color: AppColors.burgundy,
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        status,
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              program.title,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight:
+                                    FontWeight.bold,
+                                color:
+                                    AppColors.darkBrown,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            tooltip: '예약 삭제',
+                            visualDensity:
+                                VisualDensity.compact,
+                            onPressed: () {
+                              _confirmDeleteReservation(
+                                context,
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.delete_outline,
+                              size: 20,
+                              color:
+                                  AppColors.burgundy,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        '${session.label} · '
+                        '${reservation.guestCount}명',
                         style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.burgundy,
+                          fontSize: 12,
+                          color: Colors.grey,
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(
+                            isPast
+                                ? Icons.check_circle
+                                : Icons.schedule,
+                            size: 16,
+                            color:
+                                AppColors.burgundy,
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              status,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight:
+                                    FontWeight.bold,
+                                color:
+                                    AppColors.burgundy,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-        ),
+          const Divider(height: 1),
+          InkWell(
+            borderRadius: const BorderRadius.vertical(
+              bottom: Radius.circular(22),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => InvitationPage(
+                    reservationId:
+                        reservation.id,
+                  ),
+                ),
+              );
+            },
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    isPast
+                        ? Icons.receipt_long_outlined
+                        : Icons
+                            .confirmation_number_outlined,
+                    size: 19,
+                    color: AppColors.burgundy,
+                  ),
+                  const SizedBox(width: 9),
+                  Expanded(
+                    child: Text(
+                      isPast
+                          ? '예약 정보 다시 보기'
+                          : '디지털 초대장 보기',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.darkBrown,
+                      ),
+                    ),
+                  ),
+                  const Icon(
+                    Icons.chevron_right,
+                    color: AppColors.burgundy,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _EmptyReservationView extends StatelessWidget {
-  const _EmptyReservationView();
+class _ReservationEmptyState
+    extends StatelessWidget {
+  final bool isUpcoming;
+
+  const _ReservationEmptyState({
+    required this.isUpcoming,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Padding(
-        padding: EdgeInsets.all(32),
+        padding: const EdgeInsets.all(32),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment:
+              MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.confirmation_number_outlined,
+              isUpcoming
+                  ? Icons
+                      .confirmation_number_outlined
+                  : Icons.history,
               size: 56,
               color: AppColors.burgundy,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
-              '아직 예약이 없습니다.',
-              style: TextStyle(
+              isUpcoming
+                  ? '예정된 예약이 없습니다.'
+                  : '지난 예약이 없습니다.',
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: AppColors.darkBrown,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
-              '홈에서 웰니스 프로그램을 선택해보세요.',
+              isUpcoming
+                  ? '홈에서 웰니스 프로그램을 예약해보세요.'
+                  : '체험을 완료하면 이곳에 지난 예약이 표시됩니다.',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
+                height: 1.5,
                 color: Colors.grey,
               ),
             ),
