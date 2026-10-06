@@ -4,6 +4,7 @@ import '../../core/theme/app_colors.dart';
 import '../../data/models/program.dart';
 import '../../data/repositories/local_repository.dart';
 import '../program/program_detail_page.dart';
+import '../program/program_list_page.dart';
 import '../recovery_test/recovery_test_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -48,15 +49,38 @@ class HomePage extends StatelessWidget {
 
               const SizedBox(height: 30),
 
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Text(
-                  '추천 프로그램',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.darkBrown,
-                  ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    const Expanded(
+                      child: Text(
+                        '추천 프로그램',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.darkBrown,
+                        ),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ProgramListPage(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        '전체보기',
+                        style: TextStyle(
+                          color: AppColors.burgundy,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
