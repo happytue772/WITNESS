@@ -6,14 +6,19 @@ import '../reservation/my_reservations_page.dart';
 import '../journal/journal_page.dart';
 
 class MainNavigationPage extends StatefulWidget {
-  const MainNavigationPage({super.key});
+  final int initialIndex;
+
+  const MainNavigationPage({
+    super.key,
+    this.initialIndex = 0,
+  });
 
   @override
   State<MainNavigationPage> createState() => _MainNavigationPageState();
 }
 
 class _MainNavigationPageState extends State<MainNavigationPage> {
-  int _currentIndex = 0;
+  late int _currentIndex;
 
   final List<Widget> _pages = const [
     HomePage(),
@@ -21,6 +26,15 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
     MyReservationsPage(),
     JournalPage(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex.clamp(
+      0,
+      _pages.length - 1,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
