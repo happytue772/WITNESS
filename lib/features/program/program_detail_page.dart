@@ -27,10 +27,8 @@ class ProgramDetailPage extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        actions: const [
-          HomeNavigationAction(),
-        ],
       ),
+      bottomNavigationBar: const HomeNavigationBottomBar(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(bottom: 32),
         child: Column(
