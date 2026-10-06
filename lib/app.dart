@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'core/theme/app_theme.dart';
-import 'features/navigation/main_navigation_page.dart';
+import 'features/welcome/welcome_page.dart';
 
 class FirstWitnessApp extends StatelessWidget {
   const FirstWitnessApp({super.key});
@@ -12,7 +12,7 @@ class FirstWitnessApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'THE FIRST WITNESS',
       theme: AppTheme.lightTheme,
-      home: const MainNavigationPage(),
+      home: const WelcomePage(),
     );
   }
 }
