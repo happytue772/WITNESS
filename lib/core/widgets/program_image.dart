@@ -52,11 +52,30 @@ class ProgramImage extends StatelessWidget {
         children: [
           Icon(
             _fallbackIcon,
-            size: 58,
+            size: 52,
             color: AppColors.burgundy,
           ),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 5,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.white.withValues(alpha: 0.78),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Text(
+              '이미지 추후 적용',
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                color: AppColors.burgundy,
+              ),
+            ),
+          ),
           if (showLabel) ...[
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
             Text(
               '$senseType 웰니스 프로그램',
               style: const TextStyle(
