@@ -148,67 +148,11 @@ class ExplorationPage extends StatelessWidget {
                 // 시크릿 맵
                 // ======================================
 
-                Container(
-                  width: double.infinity,
-                  height: 245,
-                  decoration: BoxDecoration(
-                    color: AppColors.softYellow,
-                    borderRadius:
-                    BorderRadius.circular(24),
-                  ),
-                  child: Column(
-                    mainAxisAlignment:
-                    MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.map_outlined,
-                        size: 72,
-                        color: AppColors.burgundy,
-                      ),
-
-                      const SizedBox(height: 12),
-
-                      Text(
-                        '시크릿 맵',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight:
-                          FontWeight.bold,
-                          color:
-                          AppColors.darkBrown,
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      Padding(
-                        padding:
-                        const EdgeInsets.symmetric(
-                          horizontal: 24,
-                        ),
-                        child: Text(
-                          '오브제와 단서를 따라 숨겨진 경험을 발견해보세요.',
-                          textAlign:
-                          TextAlign.center,
-                          style: TextStyle(
-                            height: 1.5,
-                            color:
-                            AppColors.darkBrown,
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      const Text(
-                        'GPS 실시간 위치 추적은 사용하지 않습니다.',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
+                _SecretMapPreview(
+                  points: points,
+                  discoveredPointIds:
+                      progress.discoveredPointIds,
+                  nextPoint: nextPoint,
                 ),
 
                 const SizedBox(height: 14),
@@ -527,6 +471,171 @@ class ExplorationPage extends StatelessWidget {
 // ==================================================
 // 탐색 단서 카드
 // ==================================================
+
+class _SecretMapPreview extends StatelessWidget {
+  final List<ExplorationPoint> points;
+  final List<String> discoveredPointIds;
+  final ExplorationPoint? nextPoint;
+
+  const _SecretMapPreview({
+    required this.points,
+    required this.discoveredPointIds,
+    required this.nextPoint,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(
+        18,
+        18,
+        18,
+        16,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.softYellow,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.map_outlined,
+                color: AppColors.burgundy,
+              ),
+              const SizedBox(width: 8),
+              const Expanded(
+                child: Text(
+                  '시크릿 맵',
+                  style: TextStyle(
+                    fontSize: 21,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.darkBrown,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 9,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.white.withValues(
+                    alpha: 0.75,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text(
+                  '일러스트 추후 적용',
+                  style: TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.burgundy,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          Row(
+            children: List.generate(
+              points.length,
+              (index) {
+                final point = points[index];
+                final discovered =
+                    discoveredPointIds.contains(point.id);
+                final current =
+                    nextPoint?.id == point.id;
+
+                return Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 52,
+                              height: 52,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: discovered
+                                    ? AppColors.burgundy
+                                    : current
+                                        ? AppColors.white
+                                        : Colors.white54,
+                                border: Border.all(
+                                  color: current
+                                      ? AppColors.burgundy
+                                      : Colors.transparent,
+                                  width: 2,
+                                ),
+                              ),
+                              child: Icon(
+                                discovered
+                                    ? Icons.check
+                                    : current
+                                        ? Icons.place_outlined
+                                        : Icons.lock_outline,
+                                color: discovered
+                                    ? AppColors.white
+                                    : AppColors.burgundy,
+                              ),
+                            ),
+                            const SizedBox(height: 7),
+                            Text(
+                              '${point.order}',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: discovered || current
+                                    ? AppColors.darkBrown
+                                    : Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (index < points.length - 1)
+                        Expanded(
+                          child: Container(
+                            height: 2,
+                            color: discovered
+                                ? AppColors.burgundy
+                                : Colors.white70,
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            nextPoint == null
+                ? '모든 단서를 발견했습니다.'
+                : '현재 목표: ${nextPoint!.title}',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: AppColors.darkBrown,
+            ),
+          ),
+          const SizedBox(height: 5),
+          const Text(
+            '정확한 길을 안내하는 GPS 지도는 사용하지 않습니다.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 11,
+              color: Colors.grey,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class _ExplorationPointCard
     extends StatelessWidget {
