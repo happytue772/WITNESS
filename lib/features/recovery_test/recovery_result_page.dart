@@ -4,6 +4,7 @@ import '../../core/theme/app_colors.dart';
 import '../../data/models/program.dart';
 import '../../data/repositories/local_repository.dart';
 import '../program/program_detail_page.dart';
+import '../program/program_list_page.dart';
 
 class RecoveryResultPage extends StatelessWidget {
   final String senseType;
@@ -163,9 +164,11 @@ class RecoveryResultPage extends StatelessWidget {
 
             TextButton(
               onPressed: () {
-                Navigator.popUntil(
+                Navigator.push(
                   context,
-                      (route) => route.isFirst,
+                  MaterialPageRoute(
+                    builder: (_) => const ProgramListPage(),
+                  ),
                 );
               },
               child: const Text(
