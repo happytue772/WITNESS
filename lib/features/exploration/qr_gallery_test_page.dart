@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../core/navigation/home_navigation_action.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/repositories/local_repository.dart';
 
@@ -273,6 +274,13 @@ class _QrGalleryTestPageState
             color: AppColors.darkBrown,
           ),
         ),
+        actions: const [
+          HomeNavigationAction(
+            warningTitle: 'QR 테스트를 중단할까요?',
+            warningMessage:
+                '홈으로 이동하면 현재 QR 이미지 분석 작업이 중단됩니다. 이미 발견한 단서는 유지되지만 아직 인식되지 않은 QR은 기록되지 않습니다.',
+          ),
+        ],
       ),
       body: SafeArea(
         child: Padding(
