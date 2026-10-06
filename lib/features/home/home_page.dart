@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../core/assets/app_assets.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/widgets/program_image.dart';
 import '../../data/models/program.dart';
 import '../../data/repositories/local_repository.dart';
 import '../program/program_detail_page.dart';
@@ -162,40 +164,68 @@ class _HeroSection extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 20),
       height: 210,
       width: double.infinity,
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.lightBlue,
-            AppColors.darkBrown,
-          ],
-        ),
       ),
-      child: const Padding(
-        padding: EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(
-              Icons.forest_outlined,
-              size: 40,
-              color: AppColors.white,
-            ),
-            SizedBox(height: 10),
-            Text(
-              '정원 속 숨겨진 회복을\n직접 발견해보세요.',
-              style: TextStyle(
-                fontSize: 23,
-                fontWeight: FontWeight.bold,
-                height: 1.3,
-                color: AppColors.white,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            AppAssets.homeHero,
+            fit: BoxFit.cover,
+            errorBuilder: (_, _, _) {
+              return Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.lightBlue,
+                      AppColors.darkBrown,
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  Colors.black.withValues(alpha: 0.55),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.forest_outlined,
+                  size: 40,
+                  color: AppColors.white,
+                ),
+                SizedBox(height: 10),
+                Text(
+                  '정원 속 숨겨진 회복을\n직접 발견해보세요.',
+                  style: TextStyle(
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold,
+                    height: 1.3,
+                    color: AppColors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -301,8 +331,13 @@ class _ProgramMiniCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _ProgramMiniVisual(
+            ProgramImage(
+              programId: program.id,
               senseType: program.senseType,
+              height: 115,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(19),
+              ),
             ),
 
             Expanded(
@@ -360,43 +395,6 @@ class _ProgramMiniCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _ProgramMiniVisual extends StatelessWidget {
-  final String senseType;
-
-  const _ProgramMiniVisual({
-    required this.senseType,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    IconData icon;
-
-    if (senseType == '시각') {
-      icon = Icons.visibility_outlined;
-    } else if (senseType == '촉각') {
-      icon = Icons.pan_tool_alt_outlined;
-    } else {
-      icon = Icons.air;
-    }
-
-    return Container(
-      height: 115,
-      width: double.infinity,
-      decoration: const BoxDecoration(
-        color: AppColors.lightBlue,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(19),
-        ),
-      ),
-      child: Icon(
-        icon,
-        size: 44,
-        color: AppColors.burgundy,
       ),
     );
   }
