@@ -205,6 +205,80 @@ class ExplorationPage extends StatelessWidget {
                   ),
                 ),
 
+                const SizedBox(height: 14),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        backgroundColor: AppColors.background,
+                        showDragHandle: true,
+                        builder: (context) {
+                          return SafeArea(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                24,
+                                8,
+                                24,
+                                28,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    '탐색 도움 · 복귀 안내',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.darkBrown,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  const _HelpRow(
+                                    icon: Icons.visibility_outlined,
+                                    title: '현재 단서 다시 확인',
+                                    description:
+                                        '현재 활성화된 단서 카드와 오브제 정보를 확인한 뒤 주변을 천천히 살펴보세요.',
+                                  ),
+                                  const SizedBox(height: 14),
+                                  const _HelpRow(
+                                    icon: Icons.qr_code_scanner,
+                                    title: 'QR 스캔',
+                                    description:
+                                        '현재 순서에 맞는 QR만 기록됩니다. 다음 단서는 이전 단서를 발견한 뒤 열립니다.',
+                                  ),
+                                  const SizedBox(height: 14),
+                                  const _HelpRow(
+                                    icon: Icons.keyboard_return,
+                                    title: '탐색 잠시 중단',
+                                    description:
+                                        '언제든 이전 화면으로 돌아갈 수 있으며, 발견한 단서 진행 상태는 저장됩니다.',
+                                  ),
+                                  const SizedBox(height: 20),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('확인'),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    icon: const Icon(Icons.help_outline),
+                    label: const Text('탐색 도움 · 복귀 안내'),
+                  ),
+                ),
+
                 const SizedBox(height: 28),
 
                 // ======================================
@@ -630,6 +704,62 @@ class _NotCheckedInView
           ),
         ),
       ),
+    );
+  }
+}
+
+class _HelpRow extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String description;
+
+  const _HelpRow({
+    required this.icon,
+    required this.title,
+    required this.description,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 42,
+          height: 42,
+          decoration: const BoxDecoration(
+            color: AppColors.softYellow,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            icon,
+            color: AppColors.burgundy,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.darkBrown,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                description,
+                style: const TextStyle(
+                  height: 1.5,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
