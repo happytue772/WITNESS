@@ -177,10 +177,8 @@ class _VisitCardPageState extends State<VisitCardPage> {
             color: AppColors.darkBrown,
           ),
         ),
-        actions: const [
-          HomeNavigationAction(),
-        ],
       ),
+      bottomNavigationBar: const HomeNavigationBottomBar(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
