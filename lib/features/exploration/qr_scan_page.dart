@@ -282,14 +282,12 @@ class _QrScanPageState extends State<QrScanPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        actions: const [
-          HomeNavigationAction(
-            warningTitle: 'QR 스캔을 중단할까요?',
-            warningMessage:
-                '홈으로 이동하면 현재 QR 스캔이 중단됩니다. 이미 발견한 단서는 유지되지만 아직 인식되지 않은 QR은 기록되지 않습니다.',
-            iconColor: Colors.white,
-          ),
-        ],
+      ),
+      bottomNavigationBar: const HomeNavigationBottomBar(
+        warningTitle: 'QR 스캔을 중단할까요?',
+        warningMessage:
+            '홈으로 이동하면 현재 QR 스캔이 중단됩니다. 이미 발견한 단서는 유지되지만 아직 인식되지 않은 QR은 기록되지 않습니다.',
+        darkStyle: true,
       ),
       body: Stack(
         children: [
