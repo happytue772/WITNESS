@@ -133,6 +133,81 @@ class _ReservationCard extends StatelessWidget {
     required this.reservation,
   });
 
+  Future<void> _confirmDeleteReservation(
+    BuildContext context,
+  ) async {
+    final repository = LocalRepository.instance;
+    final program =
+        repository.programById(reservation.programId);
+
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('예약을 삭제할까요?'),
+          content: Text(
+            '${program.title} 예약을 삭제합니다.\n\n'
+            '이 예약의 탐색 진행 상태와 연결된 후기 기록도 함께 삭제됩니다.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialogContext, false);
+              },
+              child: const Text('취소'),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.pop(dialogContext, true);
+              },
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.burgundy,
+              ),
+              child: const Text('삭제'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete != true || !context.mounted) {
+      return;
+    }
+
+    try {
+      final deleted =
+          await repository.deleteReservation(
+        reservation.id,
+      );
+
+      if (!context.mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            deleted
+                ? '예약이 삭제되었습니다.'
+                : '삭제할 예약을 찾지 못했습니다.',
+          ),
+        ),
+      );
+    } catch (error) {
+      if (!context.mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '예약을 삭제하지 못했습니다: $error',
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final repository = LocalRepository.instance;
@@ -214,6 +289,19 @@ class _ReservationCard extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
+                    IconButton(
+                      tooltip: '예약 삭제',
+                      onPressed: () {
+                        _confirmDeleteReservation(
+                          context,
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.delete_outline,
+                        size: 21,
+                        color: AppColors.burgundy,
+                      ),
+                    ),
                     const Icon(
                       Icons.arrow_forward_ios,
                       size: 15,
