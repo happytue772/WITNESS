@@ -30,10 +30,9 @@ class _VisitCardPageState extends State<VisitCardPage> {
 
   String _formatDate(DateTime date) {
     final month =
-    date.month.toString().padLeft(2, '0');
-
+        date.month.toString().padLeft(2, '0');
     final day =
-    date.day.toString().padLeft(2, '0');
+        date.day.toString().padLeft(2, '0');
 
     return '${date.year}.$month.$day';
   }
@@ -48,9 +47,8 @@ class _VisitCardPageState extends State<VisitCardPage> {
     });
 
     try {
-      // 방문 카드 위젯 찾기
       final renderObject =
-      _cardKey.currentContext?.findRenderObject();
+          _cardKey.currentContext?.findRenderObject();
 
       if (renderObject is! RenderRepaintBoundary) {
         throw Exception(
@@ -58,8 +56,8 @@ class _VisitCardPageState extends State<VisitCardPage> {
         );
       }
 
-      // 화면의 방문 카드를 PNG 이미지로 변환
-      final ui.Image image = await renderObject.toImage(
+      final ui.Image image =
+          await renderObject.toImage(
         pixelRatio: 3.0,
       );
 
@@ -74,11 +72,10 @@ class _VisitCardPageState extends State<VisitCardPage> {
       }
 
       final pngBytes =
-      byteData.buffer.asUint8List();
+          byteData.buffer.asUint8List();
 
-      // 임시 폴더
       final tempDirectory =
-      await getTemporaryDirectory();
+          await getTemporaryDirectory();
 
       final filePath =
           '${tempDirectory.path}/'
@@ -96,18 +93,14 @@ class _VisitCardPageState extends State<VisitCardPage> {
         return;
       }
 
-      // iPad/macOS 등에서 공유창 위치를 잡기 위한 영역
       Rect? sharePositionOrigin;
 
-      final box =
-      context.findRenderObject();
+      final box = context.findRenderObject();
 
       if (box is RenderBox) {
         sharePositionOrigin =
-        box.localToGlobal(
-          Offset.zero,
-        ) &
-        box.size;
+            box.localToGlobal(Offset.zero) &
+            box.size;
       }
 
       await SharePlus.instance.share(
@@ -122,7 +115,7 @@ class _VisitCardPageState extends State<VisitCardPage> {
             ),
           ],
           sharePositionOrigin:
-          sharePositionOrigin,
+              sharePositionOrigin,
         ),
       );
     } catch (error) {
@@ -148,217 +141,296 @@ class _VisitCardPageState extends State<VisitCardPage> {
 
   @override
   Widget build(BuildContext context) {
-    final repository =
-        LocalRepository.instance;
+    final repository = LocalRepository.instance;
 
-    final entry =
-    repository.journalEntryById(
+    final entry = repository.journalEntryById(
       widget.journalEntryId,
     );
 
     final program =
-    repository.programById(
-      entry.programId,
-    );
+        repository.programById(entry.programId);
 
     final hasPhoto =
         entry.photoPath != null &&
-            File(entry.photoPath!).existsSync();
+        File(entry.photoPath!).existsSync();
 
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor:
-        AppColors.background,
         title: const Text(
           '방문 카드',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: AppColors.darkBrown,
           ),
         ),
       ),
-      bottomNavigationBar: const HomeNavigationBottomBar(),
+      bottomNavigationBar:
+          const HomeNavigationBottomBar(),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.fromLTRB(
+          20,
+          8,
+          20,
+          30,
+        ),
         child: Column(
           children: [
-            // ==========================================
-            // 공유할 방문 카드 영역
-            // ==========================================
             RepaintBoundary(
               key: _cardKey,
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.fromLTRB(
-                  22,
-                  30,
-                  22,
-                  30,
-                ),
                 decoration: BoxDecoration(
                   color: AppColors.burgundy,
                   borderRadius:
-                  BorderRadius.circular(28),
+                      BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(
+                        alpha: 0.10,
+                      ),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
                 ),
+                clipBehavior: Clip.antiAlias,
                 child: Column(
                   children: [
-                    const Text(
-                      'THE FIRST WITNESS',
-                      style: TextStyle(
-                        fontSize: 15,
-                        letterSpacing: 1.2,
-                        fontWeight:
-                        FontWeight.bold,
-                        color:
-                        AppColors.softYellow,
-                      ),
-                    ),
-
-                    if (hasPhoto) ...[
-                      const SizedBox(height: 24),
-
-                      ClipRRect(
-                        borderRadius:
-                        BorderRadius.circular(
-                          20,
-                        ),
-                        child: Image.file(
-                          File(
-                            entry.photoPath!,
-                          ),
-                          width:
-                          double.infinity,
-                          height: 220,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ],
-
-                    const SizedBox(height: 26),
-
-                    if (!hasPhoto)
-                      const Icon(
-                        Icons.spa_outlined,
-                        size: 52,
-                        color: AppColors.white,
-                      ),
-
-                    if (!hasPhoto)
-                      const SizedBox(height: 22),
-
-                    Text(
-                      program.title,
-                      textAlign:
-                      TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 29,
-                        fontWeight:
-                        FontWeight.bold,
-                        color: AppColors.white,
-                      ),
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    Text(
-                      '${program.senseType} · '
-                          '${program.location}',
-                      style: const TextStyle(
-                        color: Colors.white70,
-                      ),
-                    ),
-
-                    const SizedBox(height: 26),
-
                     Container(
                       width: double.infinity,
                       padding:
-                      const EdgeInsets.all(
+                          const EdgeInsets.fromLTRB(
+                        22,
+                        24,
+                        22,
                         20,
                       ),
-                      decoration: BoxDecoration(
-                        color: AppColors.white,
-                        borderRadius:
-                        BorderRadius.circular(
-                          18,
-                        ),
-                      ),
-                      child: Text(
-                        '“${entry.oneLineReview}”',
-                        textAlign:
-                        TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          height: 1.5,
-                          fontWeight:
-                          FontWeight.bold,
-                          color:
-                          AppColors.darkBrown,
-                        ),
+                      child: const Row(
+                        children: [
+                          Icon(
+                            Icons.auto_awesome_outlined,
+                            size: 18,
+                            color: AppColors.softYellow,
+                          ),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'THE FIRST WITNESS',
+                              style: TextStyle(
+                                fontSize: 14,
+                                letterSpacing: 1.2,
+                                fontWeight:
+                                    FontWeight.bold,
+                                color:
+                                    AppColors.softYellow,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            'VISIT CARD',
+                            style: TextStyle(
+                              fontSize: 9,
+                              letterSpacing: 1.0,
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-
-                    const SizedBox(height: 22),
-
-                    Text(
-                      '기록일 '
-                          '${_formatDate(entry.createdAt)}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.white70,
+                    if (hasPhoto)
+                      Image.file(
+                        File(entry.photoPath!),
+                        width: double.infinity,
+                        height: 235,
+                        fit: BoxFit.cover,
+                      )
+                    else
+                      Container(
+                        width: double.infinity,
+                        height: 190,
+                        color: AppColors.darkBrown,
+                        child: const Column(
+                          mainAxisAlignment:
+                              MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.spa_outlined,
+                              size: 56,
+                              color: AppColors.white,
+                            ),
+                            SizedBox(height: 12),
+                            Text(
+                              '체험 사진 없음',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: Colors.white70,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.fromLTRB(
+                        22,
+                        24,
+                        22,
+                        28,
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            program.roomLabel,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              letterSpacing: 0.7,
+                              color:
+                                  AppColors.softYellow,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            program.title,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 28,
+                              height: 1.15,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 9),
+                          Text(
+                            '${program.senseType} · '
+                            '${program.location}',
+                            style: const TextStyle(
+                              color: Colors.white70,
+                            ),
+                          ),
+                          const SizedBox(height: 22),
+                          Container(
+                            width: double.infinity,
+                            padding:
+                                const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: AppColors.white,
+                              borderRadius:
+                                  BorderRadius.circular(20),
+                            ),
+                            child: Column(
+                              children: [
+                                const Icon(
+                                  Icons.format_quote,
+                                  size: 24,
+                                  color:
+                                      AppColors.burgundy,
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  entry.oneLineReview,
+                                  textAlign:
+                                      TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 17,
+                                    height: 1.55,
+                                    fontWeight:
+                                        FontWeight.bold,
+                                    color:
+                                        AppColors.darkBrown,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment:
+                                MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.calendar_today_outlined,
+                                size: 14,
+                                color: Colors.white70,
+                              ),
+                              const SizedBox(width: 7),
+                              Text(
+                                '기록일 '
+                                '${_formatDate(entry.createdAt)}',
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-
-            const SizedBox(height: 24),
-
-            // ==========================================
-            // 실제 공유 버튼
-            // ==========================================
+            const SizedBox(height: 22),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.softYellow,
+                borderRadius:
+                    BorderRadius.circular(18),
+              ),
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    size: 19,
+                    color: AppColors.burgundy,
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      '방문 카드는 현재 화면 그대로 PNG 이미지로 만들어 공유됩니다.',
+                      style: TextStyle(
+                        fontSize: 12,
+                        height: 1.45,
+                        color: AppColors.darkBrown,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               height: 56,
               child: ElevatedButton.icon(
                 onPressed:
-                _isSharing
-                    ? null
-                    : _shareVisitCard,
+                    _isSharing
+                        ? null
+                        : _shareVisitCard,
                 icon: _isSharing
                     ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child:
-                  CircularProgressIndicator(
-                    strokeWidth: 2,
-                  ),
-                )
+                        width: 20,
+                        height: 20,
+                        child:
+                            CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      )
                     : const Icon(
-                  Icons.share_outlined,
-                ),
+                        Icons.share_outlined,
+                      ),
                 label: Text(
                   _isSharing
                       ? '방문 카드 만드는 중...'
                       : '방문 카드 공유하기',
                   style: const TextStyle(
                     fontSize: 16,
-                    fontWeight:
-                    FontWeight.bold,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            const Text(
-              '방문 카드가 이미지로 만들어져 공유됩니다.',
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.grey,
               ),
             ),
           ],
