@@ -33,7 +33,7 @@ class _MainNavigationPageState extends State<MainNavigationPage> {
     _currentIndex = widget.initialIndex.clamp(
       0,
       _pages.length - 1,
-    );
+    ).toInt();
   }
 
   @override
