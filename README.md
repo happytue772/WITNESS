@@ -105,3 +105,52 @@ C:\dev\flutter\bin\flutter.bat run -d emulator-5554 --no-enable-impeller
 ## 현재 단계
 
 핵심 MVP 기능은 구현되어 있으며, 다음 작업은 실제 이미지 교체, 브랜드 디테일 고도화, 실제 Android 기기 QR 테스트, Release 빌드 및 최종 QA입니다.
+
+
+## Final QA checklist
+
+### 기능 회귀 테스트
+
+- 시작 화면 → 홈 진입
+- 회복 유형 테스트 3문항 → 추천 결과
+- 프로그램 목록 → 상세 → 예약
+- 예약 생성 후 내 예약에 표시
+- 예약 삭제 시 연결된 탐색/후기 데이터 정리
+- 디지털 초대장 → 체크인
+- QR 1 → 2 → 3 순차 검증
+- 탐색 중 홈 이동 후 진행 상태 복원
+- 체험 완료 → 사진/한 줄 후기 저장
+- 기록 → 방문 카드 → PNG 공유
+- 앱 재실행 후 예약/탐색/기록 복원
+- 진행 중 화면의 하단 `홈으로` 경고 동작
+
+### 이미지 교체 전 확인
+
+실제 브랜드/프로그램 이미지가 확정되기 전까지 임시 아이콘과
+`이미지 추후 적용` 표기를 유지합니다. 실제 파일은 기존에 정의된
+assets 경로에 같은 파일명으로 추가하면 됩니다.
+
+### Release 전에 반드시 결정할 항목
+
+아래 값은 프로젝트 자료에 확정 정보가 없으므로 임의로 정하지 않습니다.
+
+- Android applicationId / iOS Bundle Identifier
+- Android release signing keystore
+- 실제 운영 날짜 및 회차 시간
+- 실제 체크인 QR payload
+- 실제 시크릿 맵 일러스트
+- 최종 앱 아이콘 및 스플래시 이미지
+
+현재 Android release 설정은 개발 편의를 위해 debug signing을 사용하므로
+스토어 배포 전에는 별도의 release signing 설정이 필요합니다.
+
+### 권장 검증 명령
+
+```powershell
+flutter pub get
+flutter analyze
+flutter test
+flutter build apk --debug
+```
+
+실제 기기에서 카메라 QR까지 검증한 뒤 release 빌드를 진행합니다.
