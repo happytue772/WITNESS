@@ -45,10 +45,24 @@ class WelcomePage extends StatelessWidget {
                               ),
                             ),
                             child: const Center(
-                              child: Icon(
-                                Icons.forest_outlined,
-                                size: 92,
-                                color: AppColors.white,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.forest_outlined,
+                                    size: 84,
+                                    color: AppColors.white,
+                                  ),
+                                  SizedBox(height: 12),
+                                  Text(
+                                    '웰컴 이미지 추후 적용',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.white,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           );
