@@ -1,6 +1,9 @@
 class AppAssets {
   AppAssets._();
 
+  static const String welcomeHero =
+      'assets/images/home/welcome_hero.jpg';
+
   static const String homeHero =
       'assets/images/home/home_hero.jpg';
 
