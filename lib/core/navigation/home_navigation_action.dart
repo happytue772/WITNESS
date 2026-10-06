@@ -6,11 +6,13 @@ import '../theme/app_colors.dart';
 class HomeNavigationAction extends StatelessWidget {
   final String? warningTitle;
   final String? warningMessage;
+  final Color iconColor;
 
   const HomeNavigationAction({
     super.key,
     this.warningTitle,
     this.warningMessage,
+    this.iconColor = AppColors.burgundy,
   });
 
   Future<void> _goHome(BuildContext context) async {
@@ -68,9 +70,9 @@ class HomeNavigationAction extends StatelessWidget {
       onPressed: () {
         _goHome(context);
       },
-      icon: const Icon(
+      icon: Icon(
         Icons.home_outlined,
-        color: AppColors.burgundy,
+        color: iconColor,
       ),
     );
   }
