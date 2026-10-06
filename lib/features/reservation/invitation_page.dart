@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/navigation/home_navigation_action.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/repositories/local_repository.dart';
 import '../exploration/exploration_page.dart';
@@ -39,6 +40,9 @@ class InvitationPage extends StatelessWidget {
                 color: AppColors.darkBrown,
               ),
             ),
+            actions: const [
+              HomeNavigationAction(),
+            ],
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
