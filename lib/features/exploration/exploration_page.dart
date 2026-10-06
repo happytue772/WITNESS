@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/navigation/home_navigation_action.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/models/exploration_point.dart';
 import '../../data/models/reservation.dart';
@@ -100,6 +101,13 @@ class ExplorationPage extends StatelessWidget {
                 color: AppColors.darkBrown,
               ),
             ),
+            actions: const [
+              HomeNavigationAction(
+                warningTitle: '탐색을 잠시 중단할까요?',
+                warningMessage:
+                    '홈으로 이동하면 현재 탐색 화면은 종료됩니다. 이미 발견한 단서는 저장되지만 진행 중인 QR 스캔이나 아직 발견하지 않은 단서는 완료되지 않습니다. 나중에 탐색 탭에서 이어서 진행할 수 있습니다.',
+              ),
+            ],
           ),
 
           body: SingleChildScrollView(
