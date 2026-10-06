@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/widgets/program_image.dart';
 import '../../data/repositories/local_repository.dart';
 import '../journal/journal_write_page.dart';
 
@@ -81,29 +82,11 @@ class ExperiencePage extends StatelessWidget {
               crossAxisAlignment:
               CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: double.infinity,
+                ProgramImage(
+                  programId: program.id,
+                  senseType: program.senseType,
                   height: 230,
-                  decoration: BoxDecoration(
-                    borderRadius:
-                    BorderRadius.circular(24),
-                    gradient:
-                    const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        AppColors.lightBlue,
-                        AppColors.darkBrown,
-                      ],
-                    ),
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.spa_outlined,
-                      size: 72,
-                      color: AppColors.white,
-                    ),
-                  ),
+                  borderRadius: BorderRadius.circular(24),
                 ),
 
                 const SizedBox(height: 28),
