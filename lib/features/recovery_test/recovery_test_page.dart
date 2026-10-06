@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/navigation/home_navigation_action.dart';
 import '../../core/theme/app_colors.dart';
 import 'recovery_result_page.dart';
 
@@ -126,6 +127,13 @@ class _RecoveryTestPageState extends State<RecoveryTestPage> {
             color: AppColors.darkBrown,
           ),
         ),
+        actions: const [
+          HomeNavigationAction(
+            warningTitle: '테스트를 중단할까요?',
+            warningMessage:
+                '홈으로 이동하면 현재 회복 유형 테스트 진행이 종료되고 선택한 답변은 저장되지 않습니다. 다시 테스트해야 합니다.',
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
