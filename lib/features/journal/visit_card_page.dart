@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../core/navigation/home_navigation_action.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/repositories/local_repository.dart';
 
@@ -176,6 +177,9 @@ class _VisitCardPageState extends State<VisitCardPage> {
             color: AppColors.darkBrown,
           ),
         ),
+        actions: const [
+          HomeNavigationAction(),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
