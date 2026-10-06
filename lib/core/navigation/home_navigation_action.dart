@@ -77,42 +77,66 @@ class HomeNavigationBottomBar extends StatelessWidget {
         ? AppColors.softYellow
         : AppColors.burgundy;
 
-    return SafeArea(
-      top: false,
-      child: Container(
-        color: backgroundColor,
-        padding: const EdgeInsets.fromLTRB(
-          20,
-          8,
-          20,
-          12,
-        ),
-        child: Center(
-          child: SizedBox(
-            width: 190,
-            height: 48,
-            child: OutlinedButton.icon(
-              onPressed: () {
-                _goHome(context);
-              },
-              style: OutlinedButton.styleFrom(
-                foregroundColor: foregroundColor,
-                side: BorderSide(
-                  color: borderColor,
-                  width: 1.2,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(24),
+    return Material(
+      color: backgroundColor,
+      elevation: 0,
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 70,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(
+                  color: darkStyle
+                      ? Colors.white12
+                      : AppColors.burgundy.withValues(
+                          alpha: 0.10,
+                        ),
                 ),
               ),
-              icon: const Icon(
-                Icons.home_outlined,
-                size: 21,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                20,
+                10,
+                20,
+                10,
               ),
-              label: const Text(
-                '홈으로',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+              child: Align(
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: 190,
+                  height: 46,
+                  child: OutlinedButton.icon(
+                    onPressed: () {
+                      _goHome(context);
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: foregroundColor,
+                      backgroundColor: darkStyle
+                          ? Colors.white.withValues(alpha: 0.03)
+                          : AppColors.white,
+                      side: BorderSide(
+                        color: borderColor,
+                        width: 1.2,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(23),
+                      ),
+                    ),
+                    icon: const Icon(
+                      Icons.home_outlined,
+                      size: 20,
+                    ),
+                    label: const Text(
+                      '홈으로',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
