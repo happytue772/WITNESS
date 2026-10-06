@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../core/navigation/home_navigation_action.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/repositories/local_repository.dart';
 
@@ -281,6 +282,14 @@ class _QrScanPageState extends State<QrScanPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: const [
+          HomeNavigationAction(
+            warningTitle: 'QR 스캔을 중단할까요?',
+            warningMessage:
+                '홈으로 이동하면 현재 QR 스캔이 중단됩니다. 이미 발견한 단서는 유지되지만 아직 인식되지 않은 QR은 기록되지 않습니다.',
+            iconColor: Colors.white,
+          ),
+        ],
       ),
       body: Stack(
         children: [
