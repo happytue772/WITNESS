@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/navigation/home_navigation_action.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/program_image.dart';
 import '../../data/models/program.dart';
@@ -24,6 +25,9 @@ class ProgramListPage extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: const [
+          HomeNavigationAction(),
+        ],
       ),
       body: ListView.separated(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
