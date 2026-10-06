@@ -9,6 +9,7 @@ import '../models/program.dart';
 import '../models/reservation.dart';
 import '../models/session.dart';
 import '../services/local_storage_service.dart';
+import '../services/media_storage_service.dart';
 
 class LocalRepository extends ChangeNotifier {
   LocalRepository._();
@@ -18,6 +19,9 @@ class LocalRepository extends ChangeNotifier {
 
   final LocalStorageService _storage =
   LocalStorageService();
+
+  final MediaStorageService _mediaStorage =
+  MediaStorageService();
 
   // ==================================================
   // 프로그램
@@ -284,6 +288,81 @@ class LocalRepository extends ChangeNotifier {
     _schedulePersist();
 
     return reservation;
+  }
+
+  // ==================================================
+  // 예약 삭제
+  // 연결된 탐색 진행 / 후기 / 후기 사진도 함께 정리
+  // ==================================================
+
+  Future<bool> deleteReservation(
+      String reservationId,
+      ) async {
+    final reservationIndex = _reservations.indexWhere(
+          (reservation) => reservation.id == reservationId,
+    );
+
+    if (reservationIndex == -1) {
+      return false;
+    }
+
+    final reservation = _reservations[reservationIndex];
+
+    final progress =
+        _explorationProgressByReservation[reservationId];
+
+    final journalIndex = _journalEntries.indexWhere(
+          (entry) => entry.reservationId == reservationId,
+    );
+
+    final journalEntry = journalIndex == -1
+        ? null
+        : _journalEntries[journalIndex];
+
+    _reservations.removeAt(reservationIndex);
+    _explorationProgressByReservation.remove(reservationId);
+
+    if (journalIndex != -1) {
+      _journalEntries.removeAt(journalIndex);
+    }
+
+    notifyListeners();
+
+    try {
+      await _persistState();
+    } catch (error) {
+      _reservations.insert(
+        reservationIndex,
+        reservation,
+      );
+
+      if (progress != null) {
+        _explorationProgressByReservation[
+        reservationId] = progress;
+      }
+
+      if (journalEntry != null) {
+        _journalEntries.insert(
+          journalIndex,
+          journalEntry,
+        );
+      }
+
+      notifyListeners();
+      rethrow;
+    }
+
+    try {
+      await _mediaStorage.deleteImage(
+        journalEntry?.photoPath,
+      );
+    } catch (error) {
+      debugPrint(
+        '예약 삭제 후 후기 사진 정리에 실패했습니다: $error',
+      );
+    }
+
+    return true;
   }
 
   // ==================================================
