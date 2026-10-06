@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/navigation/home_navigation_action.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/models/program.dart';
 import '../../data/repositories/local_repository.dart';
@@ -61,6 +62,9 @@ class RecoveryResultPage extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: const [
+          HomeNavigationAction(),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
