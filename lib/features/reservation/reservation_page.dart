@@ -14,10 +14,12 @@ class ReservationPage extends StatefulWidget {
   });
 
   @override
-  State<ReservationPage> createState() => _ReservationPageState();
+  State<ReservationPage> createState() =>
+      _ReservationPageState();
 }
 
-class _ReservationPageState extends State<ReservationPage> {
+class _ReservationPageState
+    extends State<ReservationPage> {
   int _guestCount = 1;
 
   void _increaseGuest() {
@@ -42,7 +44,7 @@ class _ReservationPageState extends State<ReservationPage> {
 
   void _reserve() {
     final reservation =
-    LocalRepository.instance.createDemoReservation(
+        LocalRepository.instance.createDemoReservation(
       program: widget.program,
       guestCount: _guestCount,
     );
@@ -54,6 +56,59 @@ class _ReservationPageState extends State<ReservationPage> {
           reservationId: reservation.id,
         ),
       ),
+    );
+  }
+
+  void _showScheduleNotice() {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: AppColors.background,
+      showDragHandle: true,
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              24,
+              8,
+              24,
+              28,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '운영 일정 안내',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.darkBrown,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  '현재 앱은 DEMO 단계이므로 실제 운영 날짜와 회차 시간은 확정하지 않습니다. '
+                  '운영 일정이 확정되면 이 영역에서 날짜와 회차를 선택할 수 있도록 연결합니다.',
+                  style: TextStyle(
+                    height: 1.6,
+                    color: AppColors.darkBrown,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('확인'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -74,120 +129,294 @@ class _ReservationPageState extends State<ReservationPage> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                color: AppColors.softYellow,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(
+            20,
+            8,
+            20,
+            32,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.program.title,
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.burgundy,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                '${widget.program.senseType} · '
+                '${widget.program.location}',
+                style: const TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+              const SizedBox(height: 22),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  color: AppColors.softYellow,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: const Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      color: AppColors.burgundy,
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        'DEMO 예약 화면입니다.\n'
+                        '실제 운영 날짜와 회차 시간은 아직 확정되지 않았습니다.',
+                        style: TextStyle(
+                          height: 1.5,
+                          color: AppColors.darkBrown,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30),
+              const _SectionTitle('날짜 선택'),
+              const SizedBox(height: 12),
+              InkWell(
                 borderRadius: BorderRadius.circular(18),
-              ),
-              child: const Text(
-                'DEMO 예약입니다.\n'
-                    '실제 운영 날짜와 회차 시간은 아직 확정되지 않았습니다.',
-                style: TextStyle(
-                  height: 1.5,
-                  color: AppColors.darkBrown,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 28),
-
-            Text(
-              widget.program.title,
-              style: const TextStyle(
-                fontSize: 27,
-                fontWeight: FontWeight.bold,
-                color: AppColors.burgundy,
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            _InfoRow(
-              label: '감각',
-              value: widget.program.senseType,
-            ),
-            _InfoRow(
-              label: '장소',
-              value: widget.program.location,
-            ),
-            _InfoRow(
-              label: '회차',
-              value: session.label,
-            ),
-            _InfoRow(
-              label: '소요 시간',
-              value: '${widget.program.durationMinutes}분',
-            ),
-            _InfoRow(
-              label: '정원',
-              value: '${widget.program.capacity}명',
-            ),
-
-            const SizedBox(height: 18),
-
-            const Text(
-              '예약 인원',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppColors.darkBrown,
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            Row(
-              children: [
-                IconButton(
-                  onPressed: _decreaseGuest,
-                  icon: const Icon(Icons.remove),
-                ),
-                Container(
-                  constraints: const BoxConstraints(
-                    minWidth: 70,
+                onTap: _showScheduleNotice,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(18),
+                    border: Border.all(
+                      color: AppColors.burgundy.withValues(
+                        alpha: 0.18,
+                      ),
+                    ),
                   ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    '$_guestCount명',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.darkBrown,
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_month_outlined,
+                        color: AppColors.burgundy,
+                      ),
+                      SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '시연용 일정',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.darkBrown,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              '실제 운영 날짜 미정',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        Icons.info_outline,
+                        size: 20,
+                        color: AppColors.burgundy,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 28),
+              const _SectionTitle('회차 선택'),
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: AppColors.burgundy,
+                    width: 1.2,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 42,
+                      height: 42,
+                      decoration: const BoxDecoration(
+                        color: AppColors.softYellow,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.schedule_outlined,
+                        color: AppColors.burgundy,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            session.label,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.darkBrown,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            '시연용 단일 회차',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(
+                      Icons.check_circle,
+                      color: AppColors.burgundy,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 28),
+              const _SectionTitle('예약 인원'),
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: AppColors.burgundy.withValues(
+                      alpha: 0.18,
                     ),
                   ),
                 ),
-                IconButton(
-                  onPressed: _increaseGuest,
-                  icon: const Icon(Icons.add),
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed:
+                          _guestCount > 1 ? _decreaseGuest : null,
+                      icon: const Icon(Icons.remove),
+                    ),
+                    Expanded(
+                      child: Text(
+                        '$_guestCount명',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 21,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.darkBrown,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed:
+                          _guestCount < widget.program.capacity
+                              ? _increaseGuest
+                              : null,
+                      icon: const Icon(Icons.add),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-
-            const Spacer(),
-
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: _reserve,
-                child: const Text(
-                  'DEMO 예약 확정',
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
+              ),
+              const SizedBox(height: 28),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: AppColors.burgundy.withValues(
+                      alpha: 0.12,
+                    ),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    _InfoRow(
+                      label: '장소',
+                      value: widget.program.location,
+                    ),
+                    _InfoRow(
+                      label: '소요 시간',
+                      value:
+                          '${widget.program.durationMinutes}분',
+                    ),
+                    _InfoRow(
+                      label: '정원',
+                      value: '${widget.program.capacity}명',
+                      showDivider: false,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 28),
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: ElevatedButton(
+                  onPressed: _reserve,
+                  child: const Text(
+                    'DEMO 예약하기',
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  final String title;
+
+  const _SectionTitle(this.title);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: AppColors.darkBrown,
       ),
     );
   }
@@ -196,39 +425,47 @@ class _ReservationPageState extends State<ReservationPage> {
 class _InfoRow extends StatelessWidget {
   final String label;
   final String value;
+  final bool showDivider;
 
   const _InfoRow({
     required this.label,
     required this.value,
+    this.showDivider = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 15),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 90,
-            child: Text(
-              label,
-              style: const TextStyle(
-                color: Colors.grey,
+    return Column(
+      children: [
+        Row(
+          children: [
+            SizedBox(
+              width: 92,
+              child: Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.grey,
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppColors.darkBrown,
+            Expanded(
+              child: Text(
+                value,
+                textAlign: TextAlign.end,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.darkBrown,
+                ),
               ),
             ),
-          ),
+          ],
+        ),
+        if (showDivider) ...[
+          const SizedBox(height: 13),
+          const Divider(height: 1),
+          const SizedBox(height: 13),
         ],
-      ),
+      ],
     );
   }
 }
