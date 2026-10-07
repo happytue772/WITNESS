@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../core/assets/app_assets.dart';
 import '../../core/theme/app_colors.dart';
+import '../../data/services/auth_service.dart';
+import '../auth/phone_auth_page.dart';
 import '../navigation/main_navigation_page.dart';
 
 class WelcomePage extends StatelessWidget {
@@ -128,7 +130,9 @@ class WelcomePage extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (_) =>
-                                  const MainNavigationPage(),
+                                  AuthService.instance.isSignedIn
+                                      ? const MainNavigationPage()
+                                      : const PhoneAuthPage(),
                             ),
                           );
                         },
