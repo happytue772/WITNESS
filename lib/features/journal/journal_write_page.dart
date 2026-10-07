@@ -1,10 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../core/navigation/home_navigation_action.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/widgets/local_photo.dart';
 import '../../data/repositories/local_repository.dart';
 import '../../data/services/media_storage_service.dart';
 import 'visit_card_page.dart';
@@ -65,7 +64,7 @@ class _JournalWritePageState
       return false;
     }
 
-    return File(path).existsSync();
+    return localPhotoExists(path);
   }
 
   Future<void> _pickImage() async {
@@ -93,7 +92,7 @@ class _JournalWritePageState
 
       final savedPath =
       await _mediaStorage.savePickedImage(
-        pickedFile.path,
+        pickedFile,
       );
 
       if (!mounted) {
@@ -316,8 +315,8 @@ class _JournalWritePageState
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      Image.file(
-                        File(_photoPath!),
+                      localPhotoImage(
+                        _photoPath!,
                         fit: BoxFit.cover,
                       ),
 
