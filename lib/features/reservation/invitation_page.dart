@@ -4,6 +4,7 @@ import '../../core/navigation/home_navigation_action.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/repositories/local_repository.dart';
 import '../exploration/exploration_page.dart';
+import 'preparation_page.dart';
 
 class InvitationPage extends StatelessWidget {
   final String reservationId;
@@ -133,10 +134,9 @@ class InvitationPage extends StatelessWidget {
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: _TicketInfo(
-                                    icon: Icons.people_outline,
-                                    label: '인원',
-                                    value:
-                                        '${reservation.guestCount}명',
+                                    icon: Icons.person_outline,
+                                    label: '예약',
+                                    value: '본인 1명',
                                   ),
                                 ),
                               ],
@@ -206,6 +206,60 @@ class InvitationPage extends StatelessWidget {
                               ],
                             ),
                           ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 22),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    color: AppColors.softYellow,
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Row(
+                        children: [
+                          Icon(
+                            Icons.inventory_2_outlined,
+                            color: AppColors.burgundy,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            '참여 준비물 안내',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.darkBrown,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        program.preparationNotice,
+                        style: const TextStyle(
+                          height: 1.5,
+                          color: AppColors.darkBrown,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => PreparationPage(
+                                reservationId: reservation.id,
+                              ),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          '예약 · 준비물 안내 다시 보기',
                         ),
                       ),
                     ],
