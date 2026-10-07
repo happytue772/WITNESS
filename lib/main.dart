@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'app.dart';
 import 'data/repositories/local_repository.dart';
+import 'data/services/auth_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,9 +35,10 @@ class _BootstrapAppState extends State<_BootstrapApp> {
       '[BOOT] LocalRepository initialization started',
     );
 
-    await LocalRepository.instance
-        .initialize()
-        .timeout(
+    await Future.wait([
+      LocalRepository.instance.initialize(),
+      AuthService.instance.initialize(),
+    ]).timeout(
       const Duration(seconds: 10),
     );
 
