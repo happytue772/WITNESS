@@ -396,8 +396,7 @@ class _ReservationCard extends StatelessWidget {
                         ],
                       ),
                       Text(
-                        '${session.label} · '
-                        '${reservation.guestCount}명',
+                        '${session.label} · 본인 1명',
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.grey,
