@@ -1,0 +1,10 @@
+{
+  "name": "THE FIRST WITNESS",
+  "short_name": "WITNESS",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#FBF7F4",
+  "theme_color": "#7E0F1C",
+  "description": "THE FIRST WITNESS wellness exploration app",
+  "orientation": "portrait"
+}
