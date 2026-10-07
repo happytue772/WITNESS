@@ -1,14 +1,13 @@
-import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../core/navigation/home_navigation_action.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/widgets/local_photo.dart';
 import '../../data/repositories/local_repository.dart';
+import '../../data/services/visit_card_share_service.dart';
 
 class VisitCardPage extends StatefulWidget {
   final String journalEntryId;
@@ -74,21 +73,6 @@ class _VisitCardPageState extends State<VisitCardPage> {
       final pngBytes =
           byteData.buffer.asUint8List();
 
-      final tempDirectory =
-          await getTemporaryDirectory();
-
-      final filePath =
-          '${tempDirectory.path}/'
-          'first_witness_visit_card_'
-          '${DateTime.now().millisecondsSinceEpoch}.png';
-
-      final file = File(filePath);
-
-      await file.writeAsBytes(
-        pngBytes,
-        flush: true,
-      );
-
       if (!mounted) {
         return;
       }
@@ -103,20 +87,10 @@ class _VisitCardPageState extends State<VisitCardPage> {
             box.size;
       }
 
-      await SharePlus.instance.share(
-        ShareParams(
-          title: 'THE FIRST WITNESS',
-          text: 'THE FIRST WITNESS에서 남긴 '
-              '나의 회복 기록입니다.',
-          files: [
-            XFile(
-              file.path,
-              mimeType: 'image/png',
-            ),
-          ],
-          sharePositionOrigin:
-              sharePositionOrigin,
-        ),
+      await shareVisitCardBytes(
+        pngBytes,
+        sharePositionOrigin:
+            sharePositionOrigin,
       );
     } catch (error) {
       if (!mounted) {
@@ -151,8 +125,7 @@ class _VisitCardPageState extends State<VisitCardPage> {
         repository.programById(entry.programId);
 
     final hasPhoto =
-        entry.photoPath != null &&
-        File(entry.photoPath!).existsSync();
+        localPhotoExists(entry.photoPath);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -238,8 +211,8 @@ class _VisitCardPageState extends State<VisitCardPage> {
                       ),
                     ),
                     if (hasPhoto)
-                      Image.file(
-                        File(entry.photoPath!),
+                      localPhotoImage(
+                        entry.photoPath!,
                         width: double.infinity,
                         height: 235,
                         fit: BoxFit.cover,
