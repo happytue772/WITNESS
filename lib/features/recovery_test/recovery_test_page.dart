@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../core/navigation/home_navigation_action.dart';
 import '../../core/theme/app_colors.dart';
-import 'recovery_result_page.dart';
+import '../../data/repositories/local_repository.dart';
+import '../reservation/reservation_page.dart';
 
 class RecoveryTestPage extends StatefulWidget {
   const RecoveryTestPage({super.key});
@@ -86,11 +87,17 @@ class _RecoveryTestPageState extends State<RecoveryTestPage> {
 
     final result = _getResult();
 
+    final recommendedProgram =
+        LocalRepository.programs.firstWhere(
+      (program) => program.senseType == result,
+    );
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (_) => RecoveryResultPage(
-          senseType: result,
+        builder: (_) => ReservationPage(
+          program: recommendedProgram,
+          recommendedSenseType: result,
         ),
       ),
     );
