@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/widgets/local_photo.dart';
 import '../../data/models/journal_entry.dart';
 import '../../data/repositories/local_repository.dart';
 import 'visit_card_page.dart';
@@ -229,8 +228,7 @@ class _JourneyCard extends StatelessWidget {
         repository.programById(entry.programId);
 
     final hasPhoto =
-        entry.photoPath != null &&
-        File(entry.photoPath!).existsSync();
+        localPhotoExists(entry.photoPath);
 
     return Material(
       color: AppColors.white,
@@ -375,8 +373,7 @@ class _VisitCardPreview extends StatelessWidget {
         repository.programById(entry.programId);
 
     final hasPhoto =
-        entry.photoPath != null &&
-        File(entry.photoPath!).existsSync();
+        localPhotoExists(entry.photoPath);
 
     return Material(
       color: AppColors.white,
@@ -408,8 +405,8 @@ class _VisitCardPreview extends StatelessWidget {
                 width: 94,
                 height: 110,
                 child: hasPhoto
-                    ? Image.file(
-                        File(entry.photoPath!),
+                    ? localPhotoImage(
+                        entry.photoPath!,
                         fit: BoxFit.cover,
                       )
                     : Container(
@@ -510,8 +507,8 @@ class _EntryThumbnail extends StatelessWidget {
     if (hasPhoto) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(14),
-        child: Image.file(
-          File(entry.photoPath!),
+        child: localPhotoImage(
+          entry.photoPath!,
           width: size,
           height: size,
           fit: BoxFit.cover,
