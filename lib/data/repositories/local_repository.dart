@@ -40,6 +40,8 @@ class LocalRepository extends ChangeNotifier {
       '안개 장치로 시선을 가까이 모으고, 격불·찻물소리 등 다도 ASMR로 몰입을 높인다.',
       recoveryPoint:
       '흩어진 시선을 한 지점에 모아 ‘천천히 바라보는 감각’을 되찾는다.',
+      preparationNotice:
+      '안개 다도 참여 준비물은 운영 내용이 확정되는 대로 예약자에게 안내됩니다.',
     ),
     Program(
       id: 'blind_yoga',
@@ -53,6 +55,8 @@ class LocalRepository extends ChangeNotifier {
       '안대로 시각을 차단하고, 강사의 안내에 따른 저강도 동작으로 바람, 지면, 몸의 감각에 집중한다.',
       recoveryPoint:
       '몸의 흔들림과 자연의 접촉을 느끼며 중심을 되찾는다.',
+      preparationNotice:
+      '블라인드 요가 참여 준비물은 운영 내용이 확정되는 대로 예약자에게 안내됩니다.',
     ),
     Program(
       id: 'aufguss_sauna_bus',
@@ -66,6 +70,8 @@ class LocalRepository extends ChangeNotifier {
       '사우나 스톤에 제이드가든만의 향을 활용한 아로마 물을 부어 증기를 퍼뜨리고 체험한다.',
       recoveryPoint:
       '열기로 긴장을 풀고, 향으로 감각을 깨워 깊은 이완에 이른다.',
+      preparationNotice:
+      '아우프구스 사우나 버스 참여 준비물은 운영 내용이 확정되는 대로 예약자에게 안내됩니다.',
     ),
   ];
 
@@ -178,7 +184,13 @@ class LocalRepository extends ChangeNotifier {
           ),
         );
 
-        _reservations.add(reservation);
+        _reservations.add(
+          reservation.guestCount == 1
+              ? reservation
+              : reservation.copyWith(
+                  guestCount: 1,
+                ),
+        );
       }
 
       // 탐색 진행 상태 복원
@@ -260,7 +272,6 @@ class LocalRepository extends ChangeNotifier {
 
   Reservation createDemoReservation({
     required Program program,
-    required int guestCount,
   }) {
     final session =
     demoSessionForProgram(program.id);
@@ -269,7 +280,7 @@ class LocalRepository extends ChangeNotifier {
       id: 'demo_${DateTime.now().microsecondsSinceEpoch}',
       programId: program.id,
       sessionId: session.id,
-      guestCount: guestCount,
+      guestCount: 1,
       createdAt: DateTime.now(),
       checkedIn: false,
     );
