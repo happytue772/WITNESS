@@ -4,8 +4,8 @@ import '../../core/navigation/home_navigation_action.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/models/program.dart';
 import '../../data/repositories/local_repository.dart';
-import '../program/program_detail_page.dart';
 import '../program/program_list_page.dart';
+import '../reservation/reservation_page.dart';
 
 class RecoveryResultPage extends StatelessWidget {
   final String senseType;
@@ -147,14 +147,15 @@ class RecoveryResultPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => ProgramDetailPage(
+                      builder: (_) => ReservationPage(
                         program: recommendedProgram,
+                        recommendedSenseType: senseType,
                       ),
                     ),
                   );
                 },
                 child: const Text(
-                  '추천 프로그램 자세히 보기',
+                  '추천 프로그램 예약하기',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
